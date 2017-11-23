@@ -7,7 +7,7 @@ Surefire report DB importer for the [dist_test](https://github.com/cloudera/dist
 
 Use case
 --------
-The dist_test utility has output for each test result. This tool parses the surefire results and imports them into a relational database (uses PostgreSQL by default) for future analyzis.
+The dist_test utility has output for each test result. This tool parses the surefire results and imports them into a relational database (uses PostgreSQL by default) for future analysis.
 
 Usage
 -----
