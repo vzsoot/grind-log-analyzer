@@ -13,9 +13,22 @@ import java.io.*;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SpringBootApplication
 public class LogAnalyzerApplication implements CommandLineRunner {
+
+    private static Logger LOG = Logger.getLogger(LogAnalyzerApplication.class.getName());
+
+    @Autowired
+    public LogAnalyzerApplication(DBManager dbManager, GrindOutputManager grindOutputManager, GrindArtifactManager grindArtifactManager, SurefireParser surefireParser) {
+        this.dbManager = dbManager;
+        this.grindOutputManager = grindOutputManager;
+        this.grindArtifactManager = grindArtifactManager;
+        this.surefireParser = surefireParser;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(LogAnalyzerApplication.class, args);
@@ -27,60 +40,59 @@ public class LogAnalyzerApplication implements CommandLineRunner {
     @Value("${grindurl}")
     String grindUrl;
 
-    @Autowired
-    DBManager dbManager;
-
-    @Autowired
-    GrindOutputManager grindOutputManager;
-
-    @Autowired
-    GrindArtifactManager grindArtifactManager;
-
-    @Autowired
-    SurefireParser surefireParser;
+    private final DBManager dbManager;
+    private final GrindOutputManager grindOutputManager;
+    private final GrindArtifactManager grindArtifactManager;
+    private final SurefireParser surefireParser;
 
     @Override
     public void run(String... args) throws Exception {
         try {
             dbManager.createSchema();
 
-            grindOutputManager.parseGrindOutput(new URL(grindUrl))
-                .forEach(grindTask -> {
-                    dbManager.insertTask(grindTask);
+            List<GrindOutputManager.GrindTask> grindTasks = grindOutputManager.parseGrindOutput(new URL(grindUrl));
+            LOG.log(Level.INFO, "Found " + grindTasks.size() + " tests.");
 
-                    try {
-                        grindArtifactManager.fetchSurefireReport(new URL(grindTask.getSurefireUrl()), reportStream -> {
-                            try {
-                                surefireParser.parseSurefireReport(reportStream).forEach(testCase -> {
-                                    Integer testCaseId = dbManager.insertTestCase(testCase, grindTask.getTaskId());
+            AtomicInteger parseCount = new AtomicInteger();
 
-                                    Log4jParser log4jParser = new Log4jParser();
-                                    log4jParser.setLogFormat(logFormat);
+            grindTasks.forEach(grindTask -> {
+                dbManager.insertTask(grindTask);
 
-                                    List<LoggingEvent> events = new LinkedList<>();
-                                    log4jParser.setReceiver(events::add);
-                                    try {
-                                        log4jParser.parse(
-                                                new BufferedReader(
-                                                        new InputStreamReader(
-                                                                new ByteArrayInputStream(testCase.getSystemOut()))));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                LOG.log(Level.INFO, "Parsing " + parseCount.incrementAndGet() + " / " + grindTasks.size() + " tests.");
 
-                                    dbManager.insertEvents(events, testCaseId);
-                                });
-                            } catch (IOException | SAXException | ParserConfigurationException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                try {
+                    grindArtifactManager.fetchSurefireReport(new URL(grindTask.getSurefireUrl()), reportStream -> {
+                        try {
+                            surefireParser.parseSurefireReport(reportStream).forEach(testCase -> {
+                                Integer testCaseId = dbManager.insertTestCase(testCase, grindTask.getTaskId());
 
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
+                                Log4jParser log4jParser = new Log4jParser();
+                                log4jParser.setLogFormat(logFormat);
+
+                                List<LoggingEvent> events = new LinkedList<>();
+                                log4jParser.setReceiver(events::add);
+                                try {
+                                    log4jParser.parse(
+                                            new BufferedReader(
+                                                    new InputStreamReader(
+                                                            new ByteArrayInputStream(testCase.getSystemOut()))));
+                                } catch (IOException e) {
+                                    LOG.log(Level.SEVERE, e.getMessage(), e);
+                                }
+
+                                dbManager.insertEvents(events, testCaseId);
+                            });
+                        } catch (IOException | SAXException | ParserConfigurationException e) {
+                            LOG.log(Level.SEVERE, e.getMessage(), e);
+                        }
+                    });
+                } catch (Throwable e) {
+                    LOG.log(Level.SEVERE, e.getMessage() + " " + grindTask, e);
+                }
+            });
+
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 }
