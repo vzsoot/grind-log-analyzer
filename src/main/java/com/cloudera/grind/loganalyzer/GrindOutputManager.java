@@ -75,7 +75,7 @@ public class GrindOutputManager {
     }
 
     public List<GrindTask> parseGrindOutput(URL grindUrl) throws IOException {
-        Document grindPage = Jsoup.parse(grindUrl, GRIND_URL_TIMEOUT);
+        Document grindPage = Jsoup.connect(grindUrl.toString()).maxBodySize(0).timeout(GRIND_URL_TIMEOUT).get();
         return grindPage
                 .select(taskSelector)
                 .stream().map(element -> new GrindTask(
