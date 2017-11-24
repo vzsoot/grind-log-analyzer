@@ -55,10 +55,13 @@ public class LogAnalyzerApplication implements CommandLineRunner {
 
             AtomicInteger parseCount = new AtomicInteger();
 
-            grindTasks.forEach(grindTask -> {
+            grindTasks.parallelStream().forEach(grindTask -> {
                 dbManager.insertTask(grindTask);
 
-                LOG.log(Level.INFO, "Parsing " + parseCount.incrementAndGet() + " / " + grindTasks.size() + " tests.");
+                LOG.log(Level.INFO,
+                        String.format(
+                                "Parsing %1$" + Integer.toString(grindTasks.size()).length() + "d / %2$d tests.",
+                                parseCount.incrementAndGet(), grindTasks.size()));
 
                 try {
                     grindArtifactManager.fetchSurefireReport(new URL(grindTask.getSurefireUrl()), reportStream -> {
