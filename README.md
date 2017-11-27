@@ -11,12 +11,17 @@ The dist_test utility has output for each test result. This tool parses the sure
 
 Usage
 -----
-    java -jar grind-log-analyzer.jar --dburl=<target jdbc database url> --dbuser=<DB user> --dbpass=<DB password> --grindurl=<source dist-test url>
+    ```java -jar grind-log-analyzer.jar --dburl=<target jdbc database url> --dbuser=<DB user> --dbpass=<DB password> --grindurl=<source dist-test url>```
     
 Additional parameters
 ---------------------
-Additional parameters and defaults can be found [here](src/main/resources/application.properties)
+* Additional parameters and defaults can be found [here](src/main/resources/application-default.properties)
 
-For example to override the log format:
-    
-    java -jar ... --logFormat="LEVEL TIMESTAMP - MESSAGE"
+* For example to override the log format:
+    ```java -jar ... --logFormat="LEVEL TIMESTAMP - MESSAGE"```
+
+* Running with h2 embedded database with jar: 
+    ```java -jar --spring.profiles.active=default,h2 grindurl=<source dist-test url>```
+
+* Running with h2 embedded database with gradle: 
+    ```gradle bootRun -Pspring.profiles.active=default,h2 -Pgrindurl=<source dist-test url>```
