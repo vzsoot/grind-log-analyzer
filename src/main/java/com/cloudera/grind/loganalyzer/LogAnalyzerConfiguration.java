@@ -16,7 +16,7 @@ public class LogAnalyzerConfiguration {
             @Value("${grindurl}")
                     String grindUrl
     ) {
-        if (dbUrl.trim().length() == 0 || dbUser.trim().length() == 0 || dbPass.trim().length() == 0) {
+        if (dbUrl.trim().length() == 0 || dbUser.trim().length() == 0 || grindUrl.trim().length() == 0) {
             System.out.println("Usage: --dburl=<DB URL> --dbuser=<DB user> --dbpass=<DB password> " +
                     "--grindUrl=<URL to the Grind online job result list>");
             System.exit(1);
