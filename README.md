@@ -19,9 +19,3 @@ Additional parameters
 
 * For example to override the log format:
     ```java -jar ... --logFormat="LEVEL TIMESTAMP - MESSAGE"```
-
-* Running with h2 embedded database with jar: 
-    ```java -jar --spring.profiles.active=default,h2 grindurl=<source dist-test url>```
-
-* Running with h2 embedded database with gradle: 
-    ```gradle bootRun -Pspring.profiles.active=default,h2 -Pgrindurl=<source dist-test url>```
