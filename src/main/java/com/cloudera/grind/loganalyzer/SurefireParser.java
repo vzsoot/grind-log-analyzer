@@ -74,17 +74,20 @@ public class SurefireParser {
                             Elements failureElements = element.select("failure");
                             String failure = failureElements.isEmpty() ? "" : failureElements.text();
 
+                            Elements errorElements = element.select("error");
+                            String error = errorElements.isEmpty() ? "" : errorElements.text();
+
                             Elements systemErrElements = element.select("system-err");
-                            byte systemErr[] = new byte[] {};
-                            if (!systemErrElements.isEmpty() && systemErrElements.get(0).childNodeSize()>0) {
+                            byte systemErr[] = new byte[]{};
+                            if (!systemErrElements.isEmpty() && systemErrElements.get(0).childNodeSize() > 0) {
                                 systemErr = systemErrElements.get(0).childNode(0).toString().getBytes();
                             }
 
                             return new ReportTestCase(
                                     element.attr("name"),
                                     element.attr("classname"),
-                                    failure.length() == 0,
-                                    failure,
+                                    error.length() + failure.length() == 0,
+                                    error + '\n' + failure,
                                     systemErr
                             );
                         }
