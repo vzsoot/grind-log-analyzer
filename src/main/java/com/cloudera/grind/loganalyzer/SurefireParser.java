@@ -87,7 +87,7 @@ public class SurefireParser {
                                     element.attr("name"),
                                     element.attr("classname"),
                                     error.length() + failure.length() == 0,
-                                    error + '\n' + failure,
+                                    (error.length() > 0 ? error + '\n' : "") + failure,
                                     systemErr
                             );
                         }
