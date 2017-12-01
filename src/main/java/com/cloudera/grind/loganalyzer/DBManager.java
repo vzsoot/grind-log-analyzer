@@ -81,7 +81,7 @@ public class DBManager {
                     new Object[] {
                         testCaseId,
                         event.timeStamp, event.timeStamp % 1000, event.getLoggerName(), event.getLevel().toString(),
-                        event.getThreadName(), "", "", 0, "", event.getMessage()
+                        event.getThreadName(), "", "", 0, "", event.getMessage(), String.join("\n", event.getThrowableStrRep())
                     }
                 )
                 .collect(Collectors.toList());
