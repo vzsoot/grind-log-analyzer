@@ -2,6 +2,7 @@ package com.cloudera.grind.loganalyzer;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,10 +79,13 @@ public class SurefireParser {
                             Elements errorElements = element.select("error");
                             String error = errorElements.isEmpty() ? "" : errorElements.text();
 
-                            Elements systemErrElements = element.select("system-err");
-                            byte systemErr[] = new byte[]{};
+                            Elements systemErrElements = element.select("system-err, system-out");
+                            StringBuffer systemErr = new StringBuffer();
                             if (!systemErrElements.isEmpty() && systemErrElements.get(0).childNodeSize() > 0) {
-                                systemErr = systemErrElements.get(0).childNode(0).toString().getBytes();
+                                for (Element errElement : systemErrElements) {
+                                    systemErr.append(errElement.childNode(0).toString());
+                                }
+
                             }
 
                             return new ReportTestCase(
@@ -88,7 +93,7 @@ public class SurefireParser {
                                     element.attr("classname"),
                                     error.length() + failure.length() == 0,
                                     (error.length() > 0 ? error + '\n' : "") + failure,
-                                    systemErr
+                                    systemErr.toString().getBytes()
                             );
                         }
                 )
