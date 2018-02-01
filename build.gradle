@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
 group = 'com.cloudera.grind.loganalyzer'
-version = '0.0.4-SNAPSHOT'
+version = '0.0.5-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
@@ -38,3 +38,9 @@ dependencies {
 }
 
 compileJava.dependsOn(processResources)
+
+bootRun {
+	if(project.hasProperty("spring.profiles.active")){
+        systemProperties["spring.profiles.active"] = project.getProperty("spring.profiles.active")
+	}
+}

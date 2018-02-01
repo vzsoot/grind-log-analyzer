@@ -11,11 +11,18 @@ The dist_test utility has output for each test result. This tool parses the sure
 
 Usage
 -----
-    ```java -jar grind-log-analyzer.jar --dburl=<target jdbc database url> --dbuser=<DB user> --dbpass=<DB password> --grindurl=<source dist-test url>```
+    java -jar grind-log-analyzer.jar --dburl=<target jdbc database url> --dbuser=<DB user> --dbpass=<DB password> --grindurl=<source dist-test url>
     
 Additional parameters
 ---------------------
 * Additional parameters and defaults can be found [here](src/main/resources/application-default.properties)
 
 * For example to override the log format:
-    ```java -jar ... --logFormat="LEVEL TIMESTAMP - MESSAGE"```
+    java -jar ... --logFormat="LEVEL TIMESTAMP - MESSAGE"
+    
+Running with gradle
+-------------------
+* Pass active profiles:
+     gradle bootRun -Pspring.profiles.active=default,user
+
+The additional active profile will be application-user.properties
