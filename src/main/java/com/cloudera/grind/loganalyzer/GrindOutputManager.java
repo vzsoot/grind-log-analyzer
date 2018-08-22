@@ -38,12 +38,13 @@ public class GrindOutputManager {
         Document grindPage = Jsoup.connect(grindUrl.toString()).maxBodySize(0).timeout(GRIND_URL_TIMEOUT).get();
         return grindPage
                 .select(taskSelector)
-                .stream().map(element -> new GrindTask(
+                .stream()
+                    .filter(element -> !taskSuccessfulClass.equals(element.attr("class")))
+                    .map(element -> new GrindTask(
                         element.select(descriptionSelector).html(),
                         element.select(surefireUrlSelector).attr("href"),
-                        element.select(taskIdSelector).html(),
-                        taskSuccessfulClass.equals(element.attr("class"))
-                ))
-                .collect(Collectors.toList());
+                        element.select(taskIdSelector).html())
+                    )
+                    .collect(Collectors.toList());
     }
 }

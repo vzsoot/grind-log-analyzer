@@ -119,7 +119,7 @@ public class LogAnalyzerApplication implements CommandLineRunner {
             File reportFile = new File(report.trim());
 
             GrindTask surefireTask = new GrindTask(
-                reportFile.getName(), report.trim(), taskId, null
+                reportFile.getName(), report.trim(), taskId
             );
             dbManager.insertTask(surefireTask);
 

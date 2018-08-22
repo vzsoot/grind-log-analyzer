@@ -52,7 +52,7 @@ public class DBManager {
 
     public String insertTask(GrindTask task) {
         jdbcTemplate.update(insertTaskStatement,
-                task.getDescription(), task.getSurefireUrl(), task.getTaskId(), task.getSuccess());
+                task.getDescription(), task.getSurefireUrl(), task.getTaskId());
 
         return task.getTaskId();
     }

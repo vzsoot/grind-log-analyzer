@@ -4,13 +4,11 @@ public class GrindTask {
   private String description;
   private String surefireUrl;
   private String taskId;
-  private Boolean success;
 
-  public GrindTask(String description, String surefireUrl, String taskId, Boolean success) {
+  public GrindTask(String description, String surefireUrl, String taskId) {
     this.description = description;
     this.surefireUrl = surefireUrl;
     this.taskId = taskId;
-    this.success = success;
   }
 
   public String getDescription() {
@@ -25,17 +23,12 @@ public class GrindTask {
     return taskId;
   }
 
-  public Integer getSuccess() {
-    return success == null ? -1 : success ? 1 : 0;
-  }
-
   @Override
   public String toString() {
     return "GrindTask{" +
         "description='" + description + '\'' +
         ", surefireUrl='" + surefireUrl + '\'' +
         ", taskId='" + taskId + '\'' +
-        ", success='" + success + '\'' +
         '}';
   }
 }
