@@ -50,9 +50,9 @@ public class DBManager {
         }
     }
 
-    public String insertTask(GrindOutputManager.GrindTask task) {
+    public String insertTask(GrindTask task) {
         jdbcTemplate.update(insertTaskStatement,
-                task.getDescription(), task.getSurefireUrl(), task.getTaskId(), task.getSuccess() ? 1 : 0);
+                task.getDescription(), task.getSurefireUrl(), task.getTaskId(), task.getSuccess());
 
         return task.getTaskId();
     }

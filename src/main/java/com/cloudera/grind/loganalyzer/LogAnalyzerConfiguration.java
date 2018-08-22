@@ -14,11 +14,15 @@ public class LogAnalyzerConfiguration {
             @Value("${dbpass}")
                     String dbPass,
             @Value("${grindurl}")
-                    String grindUrl
+                    String grindUrl,
+            @Value("${report}")
+                    String report
     ) {
-        if (dbUrl.trim().length() == 0 || dbUser.trim().length() == 0 || grindUrl.trim().length() == 0) {
+        if (dbUrl.trim().length() == 0 || dbUser.trim().length() == 0 || (grindUrl.trim().length() == 0
+        && report.trim().length() == 0) || (grindUrl.trim().length() != 0 && report.trim().length() != 0)) {
             System.out.println("Usage: --dburl=<DB URL> --dbuser=<DB user> --dbpass=<DB password> " +
-                    "--grindUrl=<URL to the Grind online job result list>");
+                "<[--grindurl=<URL to the Grind online job result list>] | " +
+                "[--report=<path to surefire report>]>");
             System.exit(1);
         }
     }

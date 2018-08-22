@@ -15,46 +15,6 @@ public class GrindOutputManager {
 
     public static int GRIND_URL_TIMEOUT = 60 * 1000;
 
-    public class GrindTask {
-        private String description;
-        private String surefireUrl;
-        private String taskId;
-        private Boolean success;
-
-        public GrindTask(String description, String surefireUrl, String taskId, Boolean success) {
-            this.description = description;
-            this.surefireUrl = surefireUrl;
-            this.taskId = taskId;
-            this.success = success;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getSurefireUrl() {
-            return surefireUrl;
-        }
-
-        public String getTaskId() {
-            return taskId;
-        }
-
-        public Boolean getSuccess() {
-            return success;
-        }
-
-        @Override
-        public String toString() {
-            return "GrindTask{" +
-                    "description='" + description + '\'' +
-                    ", surefireUrl='" + surefireUrl + '\'' +
-                    ", taskId='" + taskId + '\'' +
-                    ", success='" + success + '\'' +
-                    '}';
-        }
-    }
-
     private String taskSelector;
     private String descriptionSelector;
     private String surefireUrlSelector;
