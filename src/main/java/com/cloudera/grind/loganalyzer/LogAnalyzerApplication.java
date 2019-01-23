@@ -52,7 +52,7 @@ public class LogAnalyzerApplication implements CommandLineRunner {
     void doOnlineRunParse(String url) {
         try {
             List<GrindTask> grindTasks = grindOutputManager.parseGrindOutput(new URL(url));
-            LOG.log(Level.INFO, "Found " + grindTasks.size() + " tests.");
+            LOG.log(Level.INFO, "Found " + grindTasks.size() + " failed task runs.");
 
             AtomicInteger parseCount = new AtomicInteger();
 
@@ -61,7 +61,7 @@ public class LogAnalyzerApplication implements CommandLineRunner {
 
                 LOG.log(Level.INFO,
                     String.format(
-                        "Parsing %1$" + Integer.toString(grindTasks.size()).length() + "d / %2$d tests.",
+                        "Parsing %1$" + Integer.toString(grindTasks.size()).length() + "d / %2$d failed task runs.",
                         parseCount.incrementAndGet(), grindTasks.size()));
 
                 try {
